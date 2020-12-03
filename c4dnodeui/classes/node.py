@@ -1,3 +1,8 @@
+import c4d
+import hashlib
+
+from typing import Callable, Any
+
 from c4dnodeui.types.nodetype import NodeType
 
 class Node(
@@ -39,7 +44,14 @@ class Node(
         for apply_callback in self.apply:
             apply_callback(self.node)
     
-    def __getattr__(self, name):
+    def __getattr__(
+        self,
+        name: str
+    ) -> Any:
+        """
+        Look for argument 'name' in own nodes,
+        if a match is found, return node
+        """
         node_long_ids = [x.long_id for x in self.nodes]
 
         if name in node_long_ids:
@@ -48,8 +60,8 @@ class Node(
     @property
     def id(self) -> int:
         """
-        This method implements the hashing of the long_id attribute
-        as an integer
+        This method implements the property 'id' as the result of
+        hashing of the long_id attribute as an integer
         """
         return int(
             hashlib.sha1(self.long_id.encode('utf-8')).hexdigest(), 16
@@ -57,6 +69,10 @@ class Node(
     
     @property
     def desc_id(self) -> c4d.DescID:
+        """
+        This method implements the property 'long'id' as the result of
+        creating a new instance of 'c4d.DescID'
+        """
         return c4d.DescID(
             c4d.DescLevel(
                 self.id,
