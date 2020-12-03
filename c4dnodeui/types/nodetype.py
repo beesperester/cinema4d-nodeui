@@ -11,8 +11,11 @@ class NodeType(type):
                 desc_id: c4d.DescID,
                 value: Any
             ) -> Callable:
-                def apply_callback(node) -> Callable:
-                    getattr(node, name)(desc_id, value)
+                def apply_callback(base_container) -> Callable:
+                    # if callable(value):
+                    #     value = value(base_container)
+
+                    getattr(base_container, name)(desc_id, value)
                 
                 return apply_callback
 

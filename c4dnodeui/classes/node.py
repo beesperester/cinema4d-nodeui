@@ -18,6 +18,7 @@ class Node(
         self.apply = []
         self.nodes = []
         self.dependencies = []
+        self.default = None
 
         if (
             "apply" in kwargs.keys() and
@@ -36,6 +37,9 @@ class Node(
             isinstance(kwargs["dependencies"], list)
         ):
             self.dependencies = kwargs["dependencies"]
+
+        if "default" in kwargs.keys():
+            self.default = kwargs["default"]
 
         # create data type
         self.node = c4d.GetCustomDataTypeDefault(self.data_type)
@@ -79,6 +83,16 @@ class Node(
                 self.data_type
             )
         )
+    
+    def GetItems(self) -> list:
+        items = []
+
+        items.append(self)
+
+        for node in self.nodes:
+            items = items + node.GetItems()
+
+        return items
 
     def Register(
         self,
@@ -93,14 +107,22 @@ class Node(
 
         resolved_dependencies = [x(data_instance) for x in self.dependencies]
 
-        if False not in resolved_dependencies:
-            result.append(
-                description.SetParameter(
-                    self.desc_id,
-                    self.node,
-                    group_id
-                )
+        if False in resolved_dependencies:
+            return False
+    
+        result.append(
+            description.SetParameter(
+                self.desc_id,
+                self.node,
+                group_id
             )
+        )
+
+        if (
+            self.Get(data_instance) is None and
+            self.default is not None
+        ):
+            self.Set(data_instance, self.default)
 
         for node in self.nodes:
             result.append(
@@ -126,14 +148,4 @@ class Node(
     ) -> bool:
         data_instance[self.id] = value
 
-        return True
-
-    def SetDefault(
-        self,
-        data_instance: c4d.BaseContainer,
-        value: Any
-    ) -> bool:
-        if self.Get(data_instance) is None:
-            return self.Set(data_instance, value)
-        
         return True
