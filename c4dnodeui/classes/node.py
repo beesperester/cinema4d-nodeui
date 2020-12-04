@@ -1,7 +1,7 @@
 import c4d
 import hashlib
 
-from typing import Callable, Any
+from typing import Callable, Any, Union
 
 from c4dnodeui.types.nodetype import NodeType
 
@@ -41,12 +41,7 @@ class Node(
         if "default" in kwargs.keys():
             self.default = kwargs["default"]
 
-        # create data type
-        self.node = c4d.GetCustomDataTypeDefault(self.data_type)
-
-        # apply data
-        for apply_callback in self.apply:
-            apply_callback(self.node)
+        
     
     def __getattr__(
         self,
@@ -98,7 +93,8 @@ class Node(
         self,
         group_id: c4d.DescID,
         description: c4d.Description,
-        data_instance: c4d.BaseContainer
+        data_instance: c4d.BaseContainer,
+        single_id: Union
     ) -> bool:
         """
         Register node at group_id with the description base container
@@ -109,14 +105,22 @@ class Node(
 
         if False in resolved_dependencies:
             return False
-    
-        result.append(
-            description.SetParameter(
-                self.desc_id,
-                self.node,
-                group_id
+
+        # create data type
+        node = c4d.GetCustomDataTypeDefault(self.data_type)
+
+        # apply data
+        for apply_callback in self.apply:
+            apply_callback(node)
+
+        if single_id is None or self.desc_id.IsPartOf(single_id)[0]:
+            result.append(
+                description.SetParameter(
+                    self.desc_id,
+                    node,
+                    group_id
+                )
             )
-        )
 
         if (
             self.Get(data_instance) is None and
@@ -129,7 +133,8 @@ class Node(
                 node.Register(
                     self.desc_id,
                     description,
-                    data_instance
+                    data_instance,
+                    single_id
                 )
             )
         
