@@ -5,6 +5,7 @@ from typing import Callable, Any, Union
 
 from c4dnodeui.types.nodetype import NodeType
 
+
 class Node(
     metaclass=NodeType
 ):
