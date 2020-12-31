@@ -41,8 +41,6 @@ class Node(
 
         if "default" in kwargs.keys():
             self.default = kwargs["default"]
-
-        
     
     def __getattr__(
         self,
