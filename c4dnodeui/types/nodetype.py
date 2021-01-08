@@ -31,6 +31,16 @@ class NodeType(type):
         
         return callback
     
+    def CompareNotEqual(
+        cls,
+        node,
+        value: Any
+    ) -> Callable:
+        def callback(data_instance: c4d.BaseContainer) -> bool:
+            return (node.Get(data_instance) != value)
+        
+        return callback
+    
     def CompareGreater(
         cls,
         node,
