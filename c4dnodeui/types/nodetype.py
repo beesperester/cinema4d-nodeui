@@ -14,7 +14,7 @@ class NodeType(type):
                 def apply_callback(base_container) -> Callable:
                     # if callable(value):
                     #     value = value(base_container)
-                    print(desc_id, value)
+                    # print(desc_id, value)
                     getattr(base_container, name)(desc_id, value)
 
                 return apply_callback
