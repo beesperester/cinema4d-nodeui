@@ -14,13 +14,13 @@ class NodeType(type):
                 def apply_callback(base_container) -> Callable:
                     # if callable(value):
                     #     value = value(base_container)
-
+                    print(desc_id, value)
                     getattr(base_container, name)(desc_id, value)
-                
+
                 return apply_callback
 
             return callback
-    
+
     def CompareEqual(
         cls,
         node,
@@ -28,9 +28,9 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) == value)
-        
+
         return callback
-    
+
     def CompareNotEqual(
         cls,
         node,
@@ -38,9 +38,9 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) != value)
-        
+
         return callback
-    
+
     def CompareGreater(
         cls,
         node,
@@ -48,9 +48,9 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) > value)
-        
+
         return callback
-    
+
     def CompareGreaterOrEqual(
         cls,
         node,
@@ -58,9 +58,9 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) >= value)
-        
+
         return callback
-    
+
     def CompareSmaller(
         cls,
         node,
@@ -68,9 +68,9 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) < value)
-        
+
         return callback
-    
+
     def CompareSmallerOrEqual(
         cls,
         node,
@@ -78,5 +78,5 @@ class NodeType(type):
     ) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
             return (node.Get(data_instance) <= value)
-        
+
         return callback
