@@ -3,15 +3,17 @@ import c4dnodeui
 
 from typing import Callable, Any
 
-class NodeType(type):
 
+class NodeType(type):
     def __getattr__(cls, name):
         if name.startswith("Set"):
+
             def callback(
-                desc_id: c4d.DescID,
-                value: Any
-            ) -> Callable:
-                def apply_callback(base_container) -> Callable:
+                desc_id: int, value: Any
+            ) -> Callable[[c4d.BaseContainer], None]:
+                def apply_callback(
+                    base_container: c4d.BaseContainer,
+                ) -> None:
                     # if callable(value):
                     #     value = value(base_container)
                     # print(desc_id, value)
@@ -21,62 +23,38 @@ class NodeType(type):
 
             return callback
 
-    def CompareEqual(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareEqual(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) == value)
+            return node.Get(data_instance) == value
 
         return callback
 
-    def CompareNotEqual(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareNotEqual(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) != value)
+            return node.Get(data_instance) != value
 
         return callback
 
-    def CompareGreater(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareGreater(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) > value)
+            return node.Get(data_instance) > value
 
         return callback
 
-    def CompareGreaterOrEqual(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareGreaterOrEqual(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) >= value)
+            return node.Get(data_instance) >= value
 
         return callback
 
-    def CompareSmaller(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareSmaller(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) < value)
+            return node.Get(data_instance) < value
 
         return callback
 
-    def CompareSmallerOrEqual(
-        cls,
-        node,
-        value: Any
-    ) -> Callable:
+    def CompareSmallerOrEqual(cls, node, value: Any) -> Callable:
         def callback(data_instance: c4d.BaseContainer) -> bool:
-            return (node.Get(data_instance) <= value)
+            return node.Get(data_instance) <= value
 
         return callback
